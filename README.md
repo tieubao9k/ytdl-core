@@ -3,10 +3,9 @@
 
 [![npm version](https://img.shields.io/npm/v/ytdl-core.svg)](https://www.npmjs.com/package/ytdl-core)
 [![npm downloads](https://img.shields.io/npm/dm/ytdl-core.svg)](https://www.npmjs.com/package/ytdl-core)
-[![Node.js CI](https://github.com/fent/node-ytdl-core/workflows/Node.js%20CI/badge.svg)](https://github.com/fent/node-ytdl-core/actions)
-[![codecov](https://codecov.io/gh/fent/node-ytdl-core/branch/master/graph/badge.svg)](https://codecov.io/gh/fent/node-ytdl-core)
+[![Node.js CI](https://github.com/tieubao9k/ytdl-core/workflows/Node.js%20CI/badge.svg)](https://github.com/tieubao9k/ytdl-core/actions)
 
-**🚀 NEW in v4.12.0:** Fast Android client optimization with **17% speed boost**!
+**🚀 NEW in v4.12.0:** Fast Android client optimization with **17% speed boost** + **DisTube fallback integration**!
 
 ---
 
@@ -14,11 +13,14 @@
 
 Yet another YouTube downloading module for Node.js. Written with only pure JavaScript and a node-friendly streaming interface.
 
-### ⚡ Performance Improvements
+### ⚡ Performance & Reliability Improvements
 - **17% faster downloads** with Android client optimization
+- **Triple-layer fallback system**: Fast mode → DisTube → Standard ytdl-core
+- **Enhanced signature extraction** using DisTube patterns for better reliability
 - Connection pooling with Keep-Alive for better throughput  
 - Automatic server speed selection
 - Direct URLs without signature decryption overhead
+- **Zero breaking changes** - fully backward compatible
 
 ## 🚀 Quick Start
 
@@ -49,228 +51,192 @@ ytdl('https://youtu.be/dQw4w9WgXcQ', { quality: 'highest' })
 
 ### Download Audio Only
 ```js
-ytdl('https://youtu.be/dQw4w9WgXcQ', { 
-  filter: 'audioonly',
-  quality: 'highestaudio' 
-})
-.pipe(fs.createWriteStream('audio.mp3'));
+// Audio only download
+ytdl('https://youtu.be/dQw4w9WgXcQ', { filter: 'audioonly' })
+  .pipe(fs.createWriteStream('my-audio.mp3'));
 ```
 
 ### Get Video Info
 ```js
+// Get video information
 const info = await ytdl.getInfo('https://youtu.be/dQw4w9WgXcQ');
 console.log('Title:', info.videoDetails.title);
-console.log('Duration:', info.videoDetails.lengthSeconds, 'seconds');
-console.log('Views:', info.videoDetails.viewCount);
+console.log('Duration:', info.videoDetails.lengthSeconds);
 ```
 
-### Download with Progress
+### Progress Tracking
 ```js
 const stream = ytdl('https://youtu.be/dQw4w9WgXcQ');
 
 stream.on('progress', (chunkLength, downloaded, total) => {
-  const percent = (downloaded / total * 100).toFixed(1);
+  const percent = (downloaded / total * 100).toFixed(2);
   console.log(`Downloaded: ${percent}%`);
 });
 
 stream.pipe(fs.createWriteStream('video.mp4'));
 ```
 
-### Choose Format
+## 🔧 Advanced Usage
+
+### Quality Selection
 ```js
-const info = await ytdl.getInfo('https://youtu.be/dQw4w9WgXcQ');
-const format = ytdl.chooseFormat(info.formats, { 
-  quality: '720p',
-  filter: 'videoandaudio' 
-});
-
-console.log('Selected format:', format.qualityLabel);
-ytdl.downloadFromInfo(info, { format }).pipe(fs.createWriteStream('720p.mp4'));
-```
-
-## 🎛️ Advanced Usage
-
-### Fast Mode (NEW!)
-```js
-// Fast mode enabled by default in v4.12.0
-const stream = ytdl(url, { fastMode: true }); // 17% faster!
-
-// Disable if needed
-const stream = ytdl(url, { fastMode: false });
-```
-
-### Custom Quality Selection
-```js
-// Get best video quality
-ytdl(url, { filter: 'videoandaudio', quality: 'highest' })
-
-// Get smallest file size
-ytdl(url, { filter: 'videoandaudio', quality: 'lowest' })
-
 // Specific quality
-ytdl(url, { filter: format => format.qualityLabel === '720p' })
-```
+ytdl(url, { quality: '720p' })
 
-### Download Range
-```js
-// Download first 10MB of video
+// Highest quality
+ytdl(url, { quality: 'highest' })
+
+// Lowest quality (fastest download)
+ytdl(url, { quality: 'lowest' })
+
+// Custom filter
 ytdl(url, { 
-  range: { start: 0, end: 10 * 1024 * 1024 } 
+  filter: format => format.container === 'mp4' && format.hasVideo 
 })
 ```
 
-### Live Stream
+### Fast Mode (NEW)
 ```js
-// Download live stream
-ytdl(liveUrl, { 
-  begin: Date.now(),
-  liveBuffer: 20000 
+// Enable fast Android client (default: true)
+const info = await ytdl.getInfo(url, { fastMode: true });
+
+// Disable fast mode to use standard method
+const info = await ytdl.getInfo(url, { fastMode: false });
+
+// Disable DisTube fallback if needed
+const stream = ytdl(url, { disableDistubeFallback: true });
+```
+
+### Range Download
+```js
+// Download specific byte range
+ytdl(url, { 
+  range: { start: 0, end: 1024 * 1024 } // First 1MB
 })
 ```
 
-## 📊 API Reference
-
-### ytdl(url, [options])
-
-Downloads video from YouTube URL and returns a readable stream.
-
-**Parameters:**
-- `url` (string): YouTube video URL
-- `options` (object): Download options
-
-**Options:**
-- `quality`: Video quality ('highest', 'lowest', specific quality)
-- `filter`: Format filter ('audioandvideo', 'audioonly', 'videoonly') 
-- `format`: Specific format object
-- `range`: Byte range `{start: number, end: number}`
-- `begin`: Start time (for live videos)
-- `fastMode`: Enable Android client optimization (default: true)
-
-### ytdl.getInfo(url, [options])
-
-Gets video information without downloading.
-
+### IPv6 Support
 ```js
-const info = await ytdl.getInfo('video_url');
-console.log(info.videoDetails.title);
-console.log(info.formats); // Available formats
+// Use IPv6 block for download
+ytdl(url, { 
+  IPv6Block: '2001:db8::/32' 
+})
 ```
 
-### ytdl.getBasicInfo(url, [options])
+## 🌍 Express.js Integration
 
-Gets basic video information (faster).
-
-### ytdl.chooseFormat(formats, options)
-
-Chooses best format from available formats.
-
-### Static Methods
-
-```js
-ytdl.validateID('dQw4w9WgXcQ')        // Validate video ID
-ytdl.validateURL(url)                 // Validate YouTube URL  
-ytdl.getVideoID(url)                  // Extract video ID
-ytdl.getURLVideoID(url)              // Get video ID from URL
-```
-
-## 🔧 Advanced Examples
-
-### Express.js Integration
 ```js
 const express = require('express');
 const ytdl = require('ytdl-core');
 const app = express();
 
-app.get('/download/:videoID', async (req, res) => {
+app.get('/download', async (req, res) => {
+  const { url } = req.query;
+  
+  if (!ytdl.validateURL(url)) {
+    return res.status(400).send('Invalid YouTube URL');
+  }
+
   try {
-    const { videoID } = req.params;
-    const info = await ytdl.getInfo(videoID);
-    
+    const info = await ytdl.getInfo(url);
     res.header('Content-Disposition', `attachment; filename="${info.videoDetails.title}.mp4"`);
-    ytdl(videoID, { quality: 'highest' }).pipe(res);
     
+    ytdl(url, { quality: 'highest' }).pipe(res);
   } catch (error) {
     res.status(500).send('Download failed');
   }
 });
 ```
 
-### Batch Download
-```js
-const videos = [
-  'https://youtu.be/dQw4w9WgXcQ',
-  'https://youtu.be/9bZkp7q19f0'
-];
+## 📊 Performance Comparison
 
-for (const url of videos) {
-  const info = await ytdl.getInfo(url);
-  const filename = info.videoDetails.title.replace(/[^\w\s]/gi, '') + '.mp4';
-  
-  ytdl(url, { quality: 'highest' })
-    .pipe(fs.createWriteStream(filename));
-}
-```
+| Method | Speed | Reliability | Signature Support |
+|--------|-------|-------------|-------------------|
+| Fast Android Client | **17% faster** | Excellent | Direct URLs |
+| DisTube Fallback | Standard | Excellent | Advanced patterns |
+| Standard ytdl-core | Standard | Good | Basic patterns |
 
-### TypeScript Support
+## 🛠 TypeScript Support
+
 ```typescript
 import ytdl from 'ytdl-core';
 
 interface DownloadOptions {
   quality: string;
   filter: string;
+  fastMode?: boolean;
 }
 
 const downloadVideo = async (url: string, options: DownloadOptions) => {
-  const info = await ytdl.getInfo(url);
-  const format = ytdl.chooseFormat(info.formats, options);
-  
-  return ytdl.downloadFromInfo(info, { format });
+  const info = await ytdl.getInfo(url, { fastMode: options.fastMode });
+  return ytdl(url, options);
 };
 ```
 
-## 🚀 Performance Tips
-
-1. **Use Fast Mode** (enabled by default): 17% speed improvement
-2. **Connection Pooling**: Reuses HTTP connections for better performance
-3. **Choose Appropriate Quality**: Lower quality = faster downloads
-4. **Use `getBasicInfo()`**: Faster than `getInfo()` for basic details
-
-## 🐛 Error Handling
+## 🔍 Error Handling
 
 ```js
-const stream = ytdl(url);
+const ytdl = require('ytdl-core');
 
-stream.on('error', (error) => {
-  if (error.statusCode === 410) {
-    console.log('Video is age-restricted or unavailable');
-  } else {
-    console.log('Download error:', error.message);
-  }
-});
+try {
+  const stream = ytdl('https://youtu.be/dQw4w9WgXcQ');
+  
+  stream.on('error', (error) => {
+    console.error('Download error:', error.message);
+    // Automatic fallback will be attempted
+  });
+  
+  stream.on('info', (info, format) => {
+    console.log('Using format:', format.qualityLabel);
+  });
+  
+} catch (error) {
+  console.error('Setup error:', error.message);
+}
 ```
 
-## 📱 Limitations
+## ⚡ Performance Tips
 
-- Private videos require authentication
-- Age-restricted videos may need additional handling  
-- Live streams have limited format options
-- Some videos may be geo-blocked
+1. **Use Fast Mode** (enabled by default)
+2. **Choose appropriate quality** - lower quality = faster download
+3. **Use audio-only for music** downloads
+4. **Enable connection pooling** for multiple downloads
+5. **Trust the fallback system** - it handles failures automatically
 
-## 🤝 Contributing
+## 🔧 API Reference
 
-We welcome contributions! Please read our contributing guidelines and submit pull requests.
+### `ytdl(url, [options])`
+Downloads a video/audio stream.
 
-## 📄 License
+### `ytdl.getInfo(url, [options])`
+Gets video information and formats.
 
-MIT License - see LICENSE file for details.
+### `ytdl.getBasicInfo(url, [options])`
+Gets basic video information (faster).
+
+### `ytdl.validateURL(url)`
+Validates YouTube URL.
+
+### `ytdl.getURLVideoID(url)`
+Extracts video ID from URL.
+
+## 📝 Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `quality` | string/number | 'highest' | Video quality to download |
+| `filter` | string/function | - | Format filter |
+| `fastMode` | boolean | true | Use fast Android client |
+| `disableDistubeFallback` | boolean | false | Disable DisTube fallback |
+| `range` | object | - | Byte range to download |
+| `begin` | string | - | Time to begin download from |
+| `requestOptions` | object | - | HTTP request options |
 
 ---
 
 # Tiếng Việt
 
-*Module tải video YouTube nhanh và tin cậy cho Node.js*
-
-## 🚀 Bắt đầu nhanh
+## 🚀 Khởi Động Nhanh
 
 ```bash
 npm install ytdl-core
@@ -285,160 +251,129 @@ ytdl('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
   .pipe(fs.createWriteStream('video.mp4'));
 ```
 
-## 📋 Ví dụ cơ bản
+## 📋 Ví Dụ Cơ Bản
 
-### Tải video
+### Tải Video
 ```js
 const ytdl = require('ytdl-core');
 const fs = require('fs');
 
-// Tải video chất lượng cao nhất
+// Tải đơn giản
 ytdl('https://youtu.be/dQw4w9WgXcQ', { quality: 'highest' })
   .pipe(fs.createWriteStream('video-cua-toi.mp4'));
 ```
 
-### Chỉ tải âm thanh
+### Chỉ Tải Audio
 ```js
-ytdl('https://youtu.be/dQw4w9WgXcQ', { 
-  filter: 'audioonly',
-  quality: 'highestaudio' 
-})
-.pipe(fs.createWriteStream('nhac.mp3'));
+// Chỉ tải âm thanh
+ytdl('https://youtu.be/dQw4w9WgXcQ', { filter: 'audioonly' })
+  .pipe(fs.createWriteStream('nhac-cua-toi.mp3'));
 ```
 
-### Lấy thông tin video
+### Lấy Thông Tin Video
 ```js
+// Lấy thông tin video
 const info = await ytdl.getInfo('https://youtu.be/dQw4w9WgXcQ');
 console.log('Tiêu đề:', info.videoDetails.title);
-console.log('Thời lượng:', info.videoDetails.lengthSeconds, 'giây');
-console.log('Lượt xem:', info.videoDetails.viewCount);
+console.log('Thời lượng:', info.videoDetails.lengthSeconds);
 ```
 
-### Tải với thanh tiến trình
+### Theo Dõi Tiến Trình
 ```js
 const stream = ytdl('https://youtu.be/dQw4w9WgXcQ');
 
 stream.on('progress', (chunkLength, downloaded, total) => {
-  const percent = (downloaded / total * 100).toFixed(1);
+  const percent = (downloaded / total * 100).toFixed(2);
   console.log(`Đã tải: ${percent}%`);
 });
 
 stream.pipe(fs.createWriteStream('video.mp4'));
 ```
 
-## ⚡ Tính năng mới - Chế độ nhanh
+## 🔧 Sử Dụng Nâng Cao
 
+### Chọn Chất Lượng
 ```js
-// Chế độ nhanh được bật mặc định (nhanh hơn 17%!)
-const stream = ytdl(url, { fastMode: true });
-
-// Tắt chế độ nhanh nếu cần
-const stream = ytdl(url, { fastMode: false });
-```
-
-## 🎛️ Sử dụng nâng cao
-
-### Chọn chất lượng tùy chỉnh
-```js
-// Chất lượng video tốt nhất
-ytdl(url, { filter: 'videoandaudio', quality: 'highest' })
-
-// File nhỏ nhất
-ytdl(url, { filter: 'videoandaudio', quality: 'lowest' })
-
 // Chất lượng cụ thể
-ytdl(url, { filter: format => format.qualityLabel === '720p' })
+ytdl(url, { quality: '720p' })
+
+// Chất lượng cao nhất
+ytdl(url, { quality: 'highest' })
+
+// Chất lượng thấp nhất (tải nhanh nhất)
+ytdl(url, { quality: 'lowest' })
 ```
 
-### Tích hợp với Express.js
+### Chế Độ Nhanh (MỚI)
 ```js
-const express = require('express');
-const ytdl = require('ytdl-core');
-const app = express();
+// Bật client Android nhanh (mặc định: true)
+const info = await ytdl.getInfo(url, { fastMode: true });
 
-app.get('/tai-video/:videoID', async (req, res) => {
-  try {
-    const { videoID } = req.params;
-    const info = await ytdl.getInfo(videoID);
-    
-    res.header('Content-Disposition', `attachment; filename="${info.videoDetails.title}.mp4"`);
-    ytdl(videoID, { quality: 'highest' }).pipe(res);
-    
-  } catch (error) {
-    res.status(500).send('Tải thất bại');
-  }
-});
+// Tắt chế độ nhanh
+const info = await ytdl.getInfo(url, { fastMode: false });
+
+// Tắt DisTube fallback nếu cần
+const stream = ytdl(url, { disableDistubeFallback: true });
 ```
 
-### Tải nhiều video
-```js
-const videos = [
-  'https://youtu.be/dQw4w9WgXcQ',
-  'https://youtu.be/9bZkp7q19f0'
-];
+## 🌟 Tính Năng Mới
 
-for (const url of videos) {
-  const info = await ytdl.getInfo(url);
-  const filename = info.videoDetails.title.replace(/[^\w\s]/gi, '') + '.mp4';
+### Hệ Thống Fallback 3 Lớp
+1. **Fast Android Client** - Tối ưu tốc độ 17%
+2. **DisTube Fallback** - Xử lý signature phức tạp  
+3. **Standard ytdl-core** - Phương pháp truyền thống
+
+### Cải Tiến Hiệu Suất
+- **Tốc độ tải nhanh hơn 17%** với client Android
+- **Kết nối Keep-Alive** cho throughput tốt hơn
+- **Tự động chọn server nhanh nhất**
+- **URL trực tiếp** không cần giải mã signature
+- **Tương thích ngược 100%**
+
+## 🔍 Xử Lý Lỗi
+
+```js
+try {
+  const stream = ytdl('https://youtu.be/dQw4w9WgXcQ');
   
-  ytdl(url, { quality: 'highest' })
-    .pipe(fs.createWriteStream(filename));
+  stream.on('error', (error) => {
+    console.error('Lỗi tải:', error.message);
+    // Hệ thống sẽ tự động fallback
+  });
+  
+  stream.on('info', (info, format) => {
+    console.log('Đang dùng format:', format.qualityLabel);
+  });
+  
+} catch (error) {
+  console.error('Lỗi thiết lập:', error.message);
 }
 ```
 
-## 📊 API chính
+## ⚡ Mẹo Tối Ưu Hiệu Suất
 
-### ytdl(url, [options])
-Tải video từ URL YouTube và trả về readable stream.
+1. **Dùng Fast Mode** (đã bật mặc định)
+2. **Chọn chất lượng phù hợp** - chất lượng thấp = tải nhanh hơn
+3. **Dùng audio-only cho nhạc**
+4. **Tin tưởng hệ thống fallback** - tự động xử lý lỗi
 
-### ytdl.getInfo(url, [options])  
-Lấy thông tin video mà không tải về.
+## 📞 Hỗ Trợ
 
-### ytdl.getBasicInfo(url, [options])
-Lấy thông tin cơ bản (nhanh hơn).
+- **GitHub Issues**: https://github.com/tieubao9k/ytdl-core/issues
+- **Original Author**: fent (https://github.com/fent)
+- **Fast Optimization**: Satoru FX
 
-### ytdl.chooseFormat(formats, options)
-Chọn format tốt nhất từ các format có sẵn.
+## 📄 Giấy Phép
 
-## 🚀 Mẹo tối ưu hiệu suất
+MIT License
 
-1. **Sử dụng Chế độ Nhanh** (mặc định): Cải thiện 17% tốc độ
-2. **Connection Pooling**: Tái sử dụng kết nối HTTP để hiệu suất tốt hơn
-3. **Chọn Chất Lượng Phù Hợp**: Chất lượng thấp hơn = tải nhanh hơn
-4. **Dùng `getBasicInfo()`**: Nhanh hơn `getInfo()` cho thông tin cơ bản
+## 🙏 Đóng Góp
 
-## 🐛 Xử lý lỗi
-
-```js
-const stream = ytdl(url);
-
-stream.on('error', (error) => {
-  if (error.statusCode === 410) {
-    console.log('Video bị giới hạn độ tuổi hoặc không khả dụng');
-  } else {
-    console.log('Lỗi tải video:', error.message);
-  }
-});
-```
-
-## 📱 Hạn chế
-
-- Video riêng tư cần xác thực
-- Video giới hạn độ tuổi có thể cần xử lý thêm
-- Live stream có ít lựa chọn format hơn
-- Một số video có thể bị chặn theo vùng địa lý
-
-## 🤝 Đóng góp
-
-Chúng tôi hoan nghênh các đóng góp! Vui lòng đọc hướng dẫn đóng góp và gửi pull request.
-
-## 📄 Giấy phép
-
-Giấy phép MIT - xem file LICENSE để biết chi tiết.
+- **Original ytdl-core**: fent và cộng đồng
+- **DisTube Integration**: @distube/ytdl-core team
+- **Fast Android Client**: Satoru FX
+- **Performance Optimization**: Satoru FX
 
 ---
 
-**Original Author:** fent  
-**Enhanced by:** Satoru FX  
-**Version:** 4.12.0  
-**Performance:** +17% speed boost with Android client optimization
+*Made with ❤️ for the Node.js community*

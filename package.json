@@ -1,12 +1,15 @@
 {
   "name": "ytdl-core",
-  "description": "YouTube video downloader in pure javascript with fast Android client optimization (+17% speed boost).",
+  "description": "YouTube video downloader in pure javascript with fast Android client optimization (+17% speed boost) + DisTube fallback integration.",
   "keywords": [
     "youtube",
     "video",
-    "download"
+    "download",
+    "distube",
+    "fallback",
+    "fast"
   ],
-  "version": "4.12.0",
+  "version": "4.12.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/tieubao9k/ytdl-core.git"
@@ -17,7 +20,7 @@
   "homepage": "https://github.com/tieubao9k/ytdl-core#readme",
   "author": "fent <fentbox@gmail.com> (https://github.com/fent)",
   "contributors": [
-    "Satoru FX (https://github.com/tieubao9k) - Fast Android client optimization",
+    "Satoru FX (https://github.com/tieubao9k) - Fast Android client optimization + DisTube fallback integration",
     "Tobias Kutscha (https://github.com/TimeForANinja)",
     "Andrew Kelley (https://github.com/andrewrk)",
     "Mauricio Allende (https://github.com/mallendeo)",
@@ -42,6 +45,7 @@
     "lint:typings:fix": "tslint --fix typings/index.d.ts"
   },
   "dependencies": {
+    "@distube/ytdl-core": "^4.15.9",
     "m3u8stream": "^0.8.6",
     "miniget": "^4.2.2",
     "sax": "^1.1.3"

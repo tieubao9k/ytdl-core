@@ -438,6 +438,7 @@ Giấy phép MIT - xem file LICENSE để biết chi tiết.
 
 ---
 
-**Author:** Satoru FX  
+**Original Author:** fent  
+**Enhanced by:** tieubao9k  
 **Version:** 4.12.0  
 **Performance:** +17% speed boost with Android client optimization

@@ -9,10 +9,15 @@
   "version": "4.12.0",
   "repository": {
     "type": "git",
-    "url": "git://github.com/fent/node-ytdl-core.git"
+    "url": "https://github.com/tieubao9k/ytdl-core.git"
   },
+  "bugs": {
+    "url": "https://github.com/tieubao9k/ytdl-core/issues"
+  },
+  "homepage": "https://github.com/tieubao9k/ytdl-core#readme",
   "author": "fent <fentbox@gmail.com> (https://github.com/fent)",
   "contributors": [
+    "tieubao9k (https://github.com/tieubao9k) - Fast Android client optimization",
     "Tobias Kutscha (https://github.com/TimeForANinja)",
     "Andrew Kelley (https://github.com/andrewrk)",
     "Mauricio Allende (https://github.com/mallendeo)",

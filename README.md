@@ -439,6 +439,6 @@ Giấy phép MIT - xem file LICENSE để biết chi tiết.
 ---
 
 **Original Author:** fent  
-**Enhanced by:** tieubao9k  
+**Enhanced by:** Satoru FX  
 **Version:** 4.12.0  
 **Performance:** +17% speed boost with Android client optimization

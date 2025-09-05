@@ -1,0 +1,71 @@
+# Development files
+*.log
+*.tmp
+*.temp
+node_modules/
+coverage/
+.nyc_output/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git files
+.git/
+.gitignore
+
+# GitHub workflows (not needed in package)
+.github/
+
+# Test files
+test/
+tests/
+*.test.js
+*.spec.js
+
+# Documentation source files
+docs/
+examples/
+benchmark/
+
+# Development scripts
+test-*.js
+comprehensive-*.js
+format-*.txt
+format-*.js
+
+# CI/CD files
+.travis.yml
+.circleci/
+appveyor.yml
+azure-pipelines.yml
+
+# Lock files (let users choose their package manager)
+package-lock.json
+yarn.lock
+
+# Development dependencies manifest
+.nvmrc
+.node-version
+
+# Temporary build files
+build/
+dist/
+*.tgz
+
+# Configuration files not needed for production
+.eslintrc*
+.prettierrc*
+tsconfig.json
+tslint.json
+
+# Coverage reports
+lcov.info
+coverage.lcov

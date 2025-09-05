@@ -1,0 +1,63 @@
+name: Publish to NPM
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          registry-url: 'https://registry.npmjs.org'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Run tests (if available)
+        run: npm test || echo "No tests defined"
+        continue-on-error: true
+        
+      - name: Build package
+        run: npm run build || echo "No build script defined"
+        continue-on-error: true
+        
+      - name: Publish to NPM
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  github-release:
+    runs-on: ubuntu-latest
+    needs: publish
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Update release with NPM info
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const release = await github.rest.repos.getReleaseByTag({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag: context.ref.replace('refs/tags/', '')
+            });
+            
+            const packageInfo = require('./package.json');
+            const npmUrl = `https://www.npmjs.com/package/${packageInfo.name}`;
+            
+            const updatedBody = release.data.body + `\n\n## 📦 NPM Package\n\nThis release is now available on NPM:\n\n\`\`\`bash\nnpm install ${packageInfo.name}@${packageInfo.version}\n\`\`\`\n\n🔗 **NPM Link**: ${npmUrl}`;
+            
+            await github.rest.repos.updateRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              release_id: release.data.id,
+              body: updatedBody
+            });

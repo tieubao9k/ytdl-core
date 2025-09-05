@@ -231,6 +231,136 @@ try {
 4. **Enable connection pooling** for multiple downloads
 5. **Trust the fallback system** - it handles failures automatically
 
+## 📋 Available Formats
+
+This enhanced ytdl-core extracts **30+ formats** from YouTube videos:
+
+### 🎵 Audio Formats (6 types)
+| Format | Container | Bitrate | Codec | Usage |
+|--------|-----------|---------|-------|--------|
+| 139 | mp4 | 48kbps | AAC | Low quality audio |
+| 140 | mp4 | 128kbps | AAC | **Recommended audio** |
+| 141 | mp4 | 256kbps | AAC | High quality audio |
+| 599 | m4a | 31kbps | AAC | Ultra low bandwidth |
+| 600 | webm | 32kbps | Opus | Web streaming |
+| 249-251 | webm | 50-160kbps | Opus | Alternative audio |
+
+### 🎬 Video Formats (23+ types)
+| Quality | Container | Resolution | Codec | Size (approx) |
+|---------|-----------|------------|-------|---------------|
+| 598 | mp4 | 144p | AVC1 | ~5-10MB |
+| 597 | mp4 | 240p | AVC1 | ~10-20MB |
+| 396 | mp4 | 360p | AVC1 | ~20-40MB |
+| 397 | mp4 | 480p | AVC1 | ~40-80MB |
+| 298 | mp4 | 720p | AVC1 | **~50-100MB** |
+| 299 | mp4 | 1080p | AVC1 | ~100-200MB |
+| 400 | mp4 | 1440p | AVC1 | ~200-400MB |
+| 401 | mp4 | 2160p | AVC1 | ~500MB+ |
+| 278-313 | webm | 144p-2160p | VP9 | Various sizes |
+
+### 🎭 Combined Formats (1 type)
+| Format | Quality | Container | Audio + Video |
+|--------|---------|-----------|---------------|
+| 18 | 360p | mp4 | **Ready to play** |
+
+## 📖 Format Usage Examples
+
+### Select Specific Format by itag
+```js
+// Download specific audio format (140 = 128kbps AAC)
+const stream = ytdl(url, { format: { itag: 140 } });
+
+// Download specific video format (298 = 720p MP4)
+const stream = ytdl(url, { format: { itag: 298 } });
+```
+
+### Filter by Format Properties
+```js
+// Audio only formats
+const audioFormats = info.formats.filter(format => 
+  format.hasAudio && !format.hasVideo
+);
+
+// Video only formats  
+const videoFormats = info.formats.filter(format => 
+  format.hasVideo && !format.hasAudio
+);
+
+// Combined audio+video formats
+const combinedFormats = info.formats.filter(format => 
+  format.hasAudio && format.hasVideo
+);
+```
+
+### Quality Selectors
+```js
+// Highest quality video
+const stream = ytdl(url, { quality: 'highest' });
+
+// Lowest quality (fastest download)
+const stream = ytdl(url, { quality: 'lowest' });
+
+// Best audio quality
+const stream = ytdl(url, { quality: 'highestaudio' });
+
+// Lowest audio (bandwidth saving)
+const stream = ytdl(url, { quality: 'lowestaudio' });
+```
+
+### Format Information Access
+```js
+const info = await ytdl.getInfo(url);
+
+// Print all available formats
+info.formats.forEach(format => {
+  console.log(`Format ${format.itag}:`);
+  console.log(`  Quality: ${format.qualityLabel || 'Audio only'}`);
+  console.log(`  Container: ${format.container}`);
+  console.log(`  Size: ${format.contentLength ? 
+    (format.contentLength / 1024 / 1024).toFixed(2) + 'MB' : 'Unknown'}`);
+  console.log(`  Audio: ${format.hasAudio ? 
+    format.audioBitrate + 'kbps' : 'No'}`);
+  console.log(`  Video: ${format.hasVideo ? 
+    format.qualityLabel : 'No'}`);
+  console.log(`  URL: ${format.url}\n`);
+});
+
+// Categorize formats
+console.log(`📀 Audio formats: ${audioFormats.length}`);
+console.log(`🎬 Video formats: ${videoFormats.length}`);  
+console.log(`🎭 Combined formats: ${combinedFormats.length}`);
+console.log(`📊 Total formats: ${info.formats.length}`);
+```
+
+### Recommended Formats for Common Use Cases
+
+```js
+// 🎵 Music/Podcast Download (Best Quality Audio)
+const musicStream = ytdl(url, { 
+  filter: format => format.itag === 140 // 128kbps AAC
+});
+
+// 📱 Mobile Video (Balance Quality/Size)  
+const mobileStream = ytdl(url, {
+  filter: format => format.itag === 396 // 360p MP4
+});
+
+// 💻 Desktop Video (Good Quality)
+const desktopStream = ytdl(url, {
+  filter: format => format.itag === 298 // 720p MP4
+});
+
+// 📺 High Quality Video (Large File)
+const hdStream = ytdl(url, {
+  filter: format => format.itag === 299 // 1080p MP4
+});
+
+// ⚡ Fast Download (Small File)
+const fastStream = ytdl(url, {
+  filter: format => format.itag === 598 // 144p MP4
+});
+```
+
 ## 🔧 API Reference
 
 ### `ytdl(url, [options])`

@@ -1,0 +1,36 @@
+{
+  "name": "@definitelytyped/header-parser",
+  "version": "0.2.20",
+  "description": "",
+  "author": "Nathan Shively-Sanders <nathansa@microsoft.com>",
+  "homepage": "https://github.com/microsoft/DefinitelyTyped-tools/tree/main/packages/header-parser#readme",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/microsoft/DefinitelyTyped-tools.git",
+    "directory": "packages/header-parser"
+  },
+  "bugs": {
+    "url": "https://github.com/microsoft/DefinitelyTyped-tools/issues"
+  },
+  "dependencies": {
+    "semver": "^7.6.3",
+    "@definitelytyped/typescript-versions": "0.1.9",
+    "@definitelytyped/utils": "0.1.8"
+  },
+  "devDependencies": {
+    "@types/semver": "^7.5.8"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=18.18.0"
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "test": "../../node_modules/.bin/jest --config ../../jest.config.js packages/header-parser"
+  }
+}

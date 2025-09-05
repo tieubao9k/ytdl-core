@@ -1,0 +1,23 @@
+{
+  "name": "@definitelytyped/typescript-versions",
+  "version": "0.1.9",
+  "description": "List of supported TypeScript versions",
+  "author": "Andrew Branch <andrew@wheream.io>",
+  "homepage": "https://github.com/microsoft/DefinitelyTyped-tools/tree/main/packages/typescript-versions#readme",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/microsoft/DefinitelyTyped-tools.git",
+    "directory": "packages/typescript-versions"
+  },
+  "bugs": {
+    "url": "https://github.com/microsoft/DefinitelyTyped-tools/issues"
+  },
+  "engines": {
+    "node": ">=18.18.0"
+  }
+}

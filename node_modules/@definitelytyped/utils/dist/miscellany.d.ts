@@ -1,0 +1,18 @@
+export declare function tryParseJson<T>(text: string): unknown;
+export declare function tryParseJson<T>(text: string, predicate: (parsed: unknown) => parsed is T): T | undefined;
+export declare function parseJson<T>(text: string): unknown;
+export declare function parseJson<T>(text: string, predicate?: (parsed: unknown) => parsed is T): T;
+export declare function identity<T>(t: T): T;
+export declare function isObject(value: unknown): value is object;
+export declare function withoutStart(s: string, start: string): string | undefined;
+export declare function computeHash(content: string): string;
+export declare function isScopedPackage(packageName: string): boolean;
+export declare function unmangleScopedPackage(packageName: string): string | undefined;
+export declare function mangleScopedPackage(packageName: string): string;
+export declare const atTypesSlash = "@types/";
+export declare function isTypesPackageName(packageName: string): boolean;
+export declare function trimAtTypesPrefixIfPresent(packageName: string): string;
+export declare function mustTrimAtTypesPrefix(packageName: string): string;
+export declare function typesPackageNameToRealName(typesPackageName: string): string;
+export declare function sleep(seconds: number): Promise<void>;
+export declare function isDeclarationPath(path: string): boolean;

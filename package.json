@@ -45,7 +45,6 @@
     "lint:typings:fix": "tslint --fix typings/index.d.ts"
   },
   "dependencies": {
-    "@distube/ytdl-core": "^4.15.9",
     "m3u8stream": "^0.8.6",
     "miniget": "^4.2.2",
     "sax": "^1.1.3"

@@ -15,11 +15,12 @@ Yet another YouTube downloading module for Node.js. Written with only pure JavaS
 
 ### ⚡ Performance & Reliability Improvements
 - **17% faster downloads** with Android client optimization
-- **Triple-layer fallback system**: Fast mode → DisTube → Standard ytdl-core
-- **Enhanced signature extraction** using DisTube patterns for better reliability
-- Connection pooling with Keep-Alive for better throughput  
-- Automatic server speed selection
-- Direct URLs without signature decryption overhead
+- **Enhanced signature extraction** using DisTube patterns for maximum reliability
+- **Cookie support** for age-restricted content and authentication
+- **Smart format parsing** with proper audio/video/combined categorization
+- **Connection pooling** with Keep-Alive for better throughput  
+- **Automatic fallback system** when signature extraction fails
+- **Direct URLs** without signature decryption overhead when possible
 - **Zero breaking changes** - fully backward compatible
 
 ## 🚀 Quick Start
@@ -121,6 +122,33 @@ ytdl(url, {
 ytdl(url, { 
   IPv6Block: '2001:db8::/32' 
 })
+```
+
+### Cookie Support (NEW)
+```js
+// Basic cookie usage for authentication
+const info = await ytdl.getInfo(url, {
+  requestOptions: {
+    headers: {
+      Cookie: 'VISITOR_INFO1_LIVE=xyz; CONSENT=YES+cb'
+    }
+  }
+});
+
+// Age-restricted videos with cookies
+const stream = ytdl(url, {
+  quality: 'highest',
+  requestOptions: {
+    headers: {
+      Cookie: 'VISITOR_INFO1_LIVE=abc; SESSION_TOKEN=def; CONSENT=YES+cb'
+    }
+  }
+});
+
+// Extract cookies from browser (manual)
+// 1. Open YouTube in browser
+// 2. F12 -> Application/Storage -> Cookies -> youtube.com
+// 3. Copy VISITOR_INFO1_LIVE and other relevant cookies
 ```
 
 ## 🌍 Express.js Integration
@@ -227,10 +255,10 @@ Extracts video ID from URL.
 | `quality` | string/number | 'highest' | Video quality to download |
 | `filter` | string/function | - | Format filter |
 | `fastMode` | boolean | true | Use fast Android client |
-| `disableDistubeFallback` | boolean | false | Disable DisTube fallback |
 | `range` | object | - | Byte range to download |
 | `begin` | string | - | Time to begin download from |
-| `requestOptions` | object | - | HTTP request options |
+| `requestOptions` | object | - | HTTP request options (includes Cookie headers) |
+| `requestOptions.headers.Cookie` | string | - | YouTube cookies for authentication/age-restricted content |
 
 ---
 
@@ -311,24 +339,46 @@ const info = await ytdl.getInfo(url, { fastMode: true });
 
 // Tắt chế độ nhanh
 const info = await ytdl.getInfo(url, { fastMode: false });
+```
 
-// Tắt DisTube fallback nếu cần
-const stream = ytdl(url, { disableDistubeFallback: true });
+### Hỗ Trợ Cookie (MỚI)
+```js
+// Sử dụng cookie cơ bản
+const info = await ytdl.getInfo(url, {
+  requestOptions: {
+    headers: {
+      Cookie: 'VISITOR_INFO1_LIVE=xyz; CONSENT=YES+cb'
+    }
+  }
+});
+
+// Video giới hạn độ tuổi với cookie
+const stream = ytdl(url, {
+  quality: 'highest',
+  requestOptions: {
+    headers: {
+      Cookie: 'VISITOR_INFO1_LIVE=abc; SESSION_TOKEN=def'
+    }
+  }
+});
+
+// Cách lấy cookie từ trình duyệt:
+// 1. Mở YouTube trên trình duyệt
+// 2. F12 -> Application -> Cookies -> youtube.com  
+// 3. Copy VISITOR_INFO1_LIVE và các cookie khác
 ```
 
 ## 🌟 Tính Năng Mới
 
-### Hệ Thống Fallback 3 Lớp
-1. **Fast Android Client** - Tối ưu tốc độ 17%
-2. **DisTube Fallback** - Xử lý signature phức tạp  
-3. **Standard ytdl-core** - Phương pháp truyền thống
-
-### Cải Tiến Hiệu Suất
-- **Tốc độ tải nhanh hơn 17%** với client Android
+### Cải Tiến Hiệu Suất & Tính Năng
+- **Tốc độ tải nhanh hơn 17%** với Fast Android client
+- **Hỗ trợ Cookie** cho video giới hạn độ tuổi và xác thực
+- **Smart format parsing** phân loại đúng audio/video/combined
+- **Enhanced signature extraction** với DisTube patterns
 - **Kết nối Keep-Alive** cho throughput tốt hơn
-- **Tự động chọn server nhanh nhất**
-- **URL trực tiếp** không cần giải mã signature
-- **Tương thích ngược 100%**
+- **Automatic fallback system** khi signature extraction thất bại
+- **URL trực tiếp** không cần giải mã signature khi có thể
+- **Tương thích ngược 100%** với code hiện có
 
 ## 🔍 Xử Lý Lỗi
 

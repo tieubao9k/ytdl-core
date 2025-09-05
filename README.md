@@ -26,12 +26,12 @@ Yet another YouTube downloading module for Node.js. Written with only pure JavaS
 ## 🚀 Quick Start
 
 ```bash
-npm install @tieubao9k/ytdl-core
+npm install ytdl-core-enhanced
 ```
 
 ```js
 const fs = require('fs');
-const ytdl = require('@tieubao9k/ytdl-core');
+const ytdl = require('ytdl-core-enhanced');
 
 // Download a video
 ytdl('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
@@ -42,7 +42,7 @@ ytdl('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
 
 ### Download Video
 ```js
-const ytdl = require('@tieubao9k/ytdl-core');
+const ytdl = require('ytdl-core-enhanced');
 const fs = require('fs');
 
 // Simple download
@@ -155,7 +155,7 @@ const stream = ytdl(url, {
 
 ```js
 const express = require('express');
-const ytdl = require('@tieubao9k/ytdl-core');
+const ytdl = require('ytdl-core-enhanced');
 const app = express();
 
 app.get('/download', async (req, res) => {
@@ -204,7 +204,7 @@ const downloadVideo = async (url: string, options: DownloadOptions) => {
 ## 🔍 Error Handling
 
 ```js
-const ytdl = require('@tieubao9k/ytdl-core');
+const ytdl = require('ytdl-core-enhanced');
 
 try {
   const stream = ytdl('https://youtu.be/dQw4w9WgXcQ');
@@ -397,12 +397,12 @@ Extracts video ID from URL.
 ## 🚀 Khởi Động Nhanh
 
 ```bash
-npm install @tieubao9k/ytdl-core
+npm install ytdl-core-enhanced
 ```
 
 ```js
 const fs = require('fs');
-const ytdl = require('@tieubao9k/ytdl-core');
+const ytdl = require('ytdl-core-enhanced');
 
 // Tải video
 ytdl('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
@@ -413,7 +413,7 @@ ytdl('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
 
 ### Tải Video
 ```js
-const ytdl = require('@tieubao9k/ytdl-core');
+const ytdl = require('ytdl-core-enhanced');
 const fs = require('fs');
 
 // Tải đơn giản

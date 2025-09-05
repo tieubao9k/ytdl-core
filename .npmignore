@@ -6,6 +6,9 @@ node_modules/
 coverage/
 .nyc_output/
 
+# Internal project files
+COMMIT_RULES.md
+
 # IDE files
 .vscode/
 .idea/

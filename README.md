@@ -1,11 +1,11 @@
-# ytdl-core
-*Fast & Reliable YouTube video downloader for Node.js*
+# ytdl-core-enhanced
+*Fast & Reliable YouTube video downloader with DisTube Integration*
 
-[![npm version](https://img.shields.io/npm/v/ytdl-core.svg)](https://www.npmjs.com/package/ytdl-core)
-[![npm downloads](https://img.shields.io/npm/dm/ytdl-core.svg)](https://www.npmjs.com/package/ytdl-core)
+[![npm version](https://img.shields.io/npm/v/ytdl-core-enhanced.svg)](https://www.npmjs.com/package/ytdl-core-enhanced)
+[![npm downloads](https://img.shields.io/npm/dm/ytdl-core-enhanced.svg)](https://www.npmjs.com/package/ytdl-core-enhanced)
 [![Node.js CI](https://github.com/tieubao9k/ytdl-core/workflows/Node.js%20CI/badge.svg)](https://github.com/tieubao9k/ytdl-core/actions)
 
-**🚀 NEW in v4.12.0:** Fast Android client optimization with **17% speed boost** + **DisTube fallback integration**!
+**🚀 NEW in v1.1.1:** Complete DisTube signature extraction integration with **maximum reliability** + **multi-client approach** + **all format preservation** + **clean console output**!
 
 ---
 
@@ -13,15 +13,15 @@
 
 Yet another YouTube downloading module for Node.js. Written with only pure JavaScript and a node-friendly streaming interface.
 
-### ⚡ Performance & Reliability Improvements
-- **17% faster downloads** with Android client optimization
-- **Enhanced signature extraction** using DisTube patterns for maximum reliability
+### ⚡ DisTube Integration Benefits
+- **Maximum reliability** with DisTube's proven signature extraction patterns
+- **Multi-client approach** (WEB, TV, ANDROID, IOS, WEB_EMBEDDED) for comprehensive format coverage
+- **Advanced TCE pattern matching** for latest YouTube player changes
+- **All format preservation** - detects and preserves every available format
+- **Enhanced signature decryption** with multiple fallback methods
+- **Real-time n-parameter transformation** for streaming URL validation
 - **Cookie support** for age-restricted content and authentication
-- **Smart format parsing** with proper audio/video/combined categorization
-- **Connection pooling** with Keep-Alive for better throughput  
-- **Automatic fallback system** when signature extraction fails
-- **Direct URLs** without signature decryption overhead when possible
-- **Zero breaking changes** - fully backward compatible
+- **Zero breaking changes** - fully backward compatible with existing ytdl-core code
 
 ## 🚀 Quick Start
 
@@ -96,16 +96,21 @@ ytdl(url, {
 })
 ```
 
-### Fast Mode (NEW)
+### DisTube Integration (NEW)
 ```js
-// Enable fast Android client (default: true)
-const info = await ytdl.getInfo(url, { fastMode: true });
+// Multi-client approach (default: enabled)
+const info = await ytdl.getInfo(url, { 
+  playerClients: ['WEB', 'TV', 'ANDROID', 'IOS', 'WEB_EMBEDDED'] 
+});
 
-// Disable fast mode to use standard method
-const info = await ytdl.getInfo(url, { fastMode: false });
+// Use specific clients only
+const info = await ytdl.getInfo(url, { 
+  playerClients: ['WEB', 'ANDROID'] 
+});
 
-// Disable DisTube fallback if needed
-const stream = ytdl(url, { disableDistubeFallback: true });
+// Advanced signature extraction with TCE patterns
+const stream = ytdl(url, { quality: 'highest' });
+// Automatically uses DisTube's signature extraction methods
 ```
 
 ### Range Download
@@ -176,13 +181,16 @@ app.get('/download', async (req, res) => {
 });
 ```
 
-## 📊 Performance Comparison
+## 📊 DisTube Integration Comparison
 
-| Method | Speed | Reliability | Signature Support |
-|--------|-------|-------------|-------------------|
-| Fast Android Client | **17% faster** | Excellent | Direct URLs |
-| DisTube Fallback | Standard | Excellent | Advanced patterns |
-| Standard ytdl-core | Standard | Good | Basic patterns |
+| Feature | ytdl-core-enhanced | Standard ytdl-core | @distube/ytdl-core |
+|---------|-------------------|-------------------|-------------------|
+| Signature Extraction | **DisTube patterns** | Basic patterns | DisTube patterns |
+| Multi-client Support | **✅ 5 clients** | ❌ WEB only | ✅ 5 clients |
+| Format Preservation | **✅ All formats** | ❌ URL-only | ✅ All formats |
+| TCE Pattern Support | **✅ Advanced** | ❌ Basic | ✅ Advanced |
+| Backward Compatibility | **✅ 100%** | ✅ N/A | ❌ Breaking changes |
+| Total Formats Detected | **70+ formats** | 20-30 formats | 70+ formats |
 
 ## 🛠 TypeScript Support
 
@@ -223,17 +231,18 @@ try {
 }
 ```
 
-## ⚡ Performance Tips
+## ⚡ DisTube Integration Tips
 
-1. **Use Fast Mode** (enabled by default)
-2. **Choose appropriate quality** - lower quality = faster download
-3. **Use audio-only for music** downloads
-4. **Enable connection pooling** for multiple downloads
-5. **Trust the fallback system** - it handles failures automatically
+1. **Multi-client approach automatically enabled** - gets maximum format coverage
+2. **All formats preserved** - even without direct URLs for advanced processing
+3. **Choose appropriate quality** - lower quality = faster download
+4. **Use audio-only for music** downloads
+5. **Advanced signature patterns** - handles latest YouTube changes automatically
+6. **Trust the TCE system** - handles complex signature scenarios
 
 ## 📋 Available Formats
 
-This enhanced ytdl-core extracts **30+ formats** from YouTube videos:
+This DisTube-enhanced ytdl-core extracts **70+ formats** from YouTube videos using multi-client approach:
 
 ### 🎵 Audio Formats (6 types)
 | Format | Container | Bitrate | Codec | Usage |
@@ -384,7 +393,7 @@ Extracts video ID from URL.
 |--------|------|---------|-------------|
 | `quality` | string/number | 'highest' | Video quality to download |
 | `filter` | string/function | - | Format filter |
-| `fastMode` | boolean | true | Use fast Android client |
+| `playerClients` | array | ['WEB','TV','ANDROID','IOS','WEB_EMBEDDED'] | YouTube API clients to use |
 | `range` | object | - | Byte range to download |
 | `begin` | string | - | Time to begin download from |
 | `requestOptions` | object | - | HTTP request options (includes Cookie headers) |
@@ -462,13 +471,21 @@ ytdl(url, { quality: 'highest' })
 ytdl(url, { quality: 'lowest' })
 ```
 
-### Chế Độ Nhanh (MỚI)
+### Tích Hợp DisTube (MỚI)
 ```js
-// Bật client Android nhanh (mặc định: true)
-const info = await ytdl.getInfo(url, { fastMode: true });
+// Multi-client approach (mặc định: bật)
+const info = await ytdl.getInfo(url, { 
+  playerClients: ['WEB', 'TV', 'ANDROID', 'IOS', 'WEB_EMBEDDED'] 
+});
 
-// Tắt chế độ nhanh
-const info = await ytdl.getInfo(url, { fastMode: false });
+// Chỉ sử dụng client cụ thể
+const info = await ytdl.getInfo(url, { 
+  playerClients: ['WEB', 'ANDROID'] 
+});
+
+// Signature extraction nâng cao với TCE patterns
+const stream = ytdl(url, { quality: 'highest' });
+// Tự động sử dụng phương pháp signature extraction của DisTube
 ```
 
 ### Hỗ Trợ Cookie (MỚI)
@@ -500,15 +517,15 @@ const stream = ytdl(url, {
 
 ## 🌟 Tính Năng Mới
 
-### Cải Tiến Hiệu Suất & Tính Năng
-- **Tốc độ tải nhanh hơn 17%** với Fast Android client
-- **Hỗ trợ Cookie** cho video giới hạn độ tuổi và xác thực
-- **Smart format parsing** phân loại đúng audio/video/combined
-- **Enhanced signature extraction** với DisTube patterns
-- **Kết nối Keep-Alive** cho throughput tốt hơn
-- **Automatic fallback system** khi signature extraction thất bại
-- **URL trực tiếp** không cần giải mã signature khi có thể
-- **Tương thích ngược 100%** với code hiện có
+### Lợi Ích Tích Hợp DisTube
+- **Độ tin cậy tối đa** với signature extraction patterns đã được chứng minh của DisTube
+- **Multi-client approach** (WEB, TV, ANDROID, IOS, WEB_EMBEDDED) cho coverage format toàn diện
+- **Advanced TCE pattern matching** cho những thay đổi mới nhất của YouTube player
+- **Bảo tồn tất cả format** - phát hiện và bảo tồn mọi format có sẵn
+- **Enhanced signature decryption** với nhiều phương pháp fallback
+- **Real-time n-parameter transformation** cho validation URL streaming
+- **Hỗ trợ Cookie** cho video giới hạn độ tuổi và xác thực  
+- **Tương thích ngược 100%** với code ytdl-core hiện có
 
 ## 🔍 Xử Lý Lỗi
 
@@ -530,12 +547,14 @@ try {
 }
 ```
 
-## ⚡ Mẹo Tối Ưu Hiệu Suất
+## ⚡ Mẹo Tích Hợp DisTube
 
-1. **Dùng Fast Mode** (đã bật mặc định)
-2. **Chọn chất lượng phù hợp** - chất lượng thấp = tải nhanh hơn
-3. **Dùng audio-only cho nhạc**
-4. **Tin tưởng hệ thống fallback** - tự động xử lý lỗi
+1. **Multi-client approach tự động bật** - nhận được coverage format tối đa
+2. **Tất cả format được bảo tồn** - kể cả không có URL trực tiếp cho xử lý nâng cao  
+3. **Chọn chất lượng phù hợp** - chất lượng thấp = tải nhanh hơn
+4. **Dùng audio-only cho nhạc**
+5. **Advanced signature patterns** - tự động xử lý thay đổi mới nhất của YouTube
+6. **Tin tưởng hệ thống TCE** - xử lý các tình huống signature phức tạp
 
 ## 📞 Hỗ Trợ
 
@@ -551,8 +570,9 @@ MIT License
 
 - **Original ytdl-core**: fent và cộng đồng
 - **DisTube Integration**: @distube/ytdl-core team
-- **Fast Android Client**: Satoru FX
-- **Performance Optimization**: Satoru FX
+- **DisTube Signature Patterns**: DisTube team
+- **Multi-client Implementation**: Satoru FX
+- **Enhanced Integration**: Satoru FX
 
 ---
 

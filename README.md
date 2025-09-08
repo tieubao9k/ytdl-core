@@ -5,7 +5,7 @@
 [![npm downloads](https://img.shields.io/npm/dm/ytdl-core-enhanced.svg)](https://www.npmjs.com/package/ytdl-core-enhanced)
 [![Node.js CI](https://github.com/tieubao9k/ytdl-core/workflows/Node.js%20CI/badge.svg)](https://github.com/tieubao9k/ytdl-core/actions)
 
-**🚀 NEW in v1.1.1:** Complete DisTube signature extraction integration with **maximum reliability** + **multi-client approach** + **all format preservation** + **clean console output**!
+**🚀 NEW in v1.1.2:** Complete DisTube signature extraction integration with **maximum reliability** + **multi-client approach** + **all format preservation** + **optimized performance** + **clean codebase**!
 
 ---
 

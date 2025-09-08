@@ -1,6 +1,6 @@
 {
   "name": "ytdl-core-enhanced",
-  "description": "YouTube video downloader in pure javascript with fast Android client optimization (+17% speed boost) + DisTube fallback integration.",
+  "description": "Enhanced YouTube video downloader with complete DisTube signature extraction integration. Maximum reliability, 70+ format detection, multi-client approach, and 100% backward compatibility.",
   "keywords": [
     "youtube",
     "video",
@@ -18,7 +18,7 @@
     "mp3",
     "mp4"
   ],
-  "version": "1.1.1",
+  "version": "1.1.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/tieubao9k/ytdl-core.git"

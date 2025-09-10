@@ -1,6 +1,6 @@
 {
   "name": "ytdl-core-enhanced",
-  "description": "Enhanced YouTube video downloader with complete DisTube signature extraction integration. Maximum reliability, 70+ format detection, multi-client approach, and 100% backward compatibility.",
+  "description": "Enhanced YouTube video downloader with multi-threading, anti-bot detection, and complete DisTube integration. Features 2-6% speed boost for large files, YouTube 2025 compatibility, and 100% backward compatibility.",
   "keywords": [
     "youtube",
     "video",
@@ -8,17 +8,18 @@
     "ytdl",
     "ytdl-core",
     "distube",
-    "fallback",
+    "multithreading",
+    "anti-bot",
     "fast",
-    "android-client",
     "enhanced",
     "downloader",
     "stream",
     "audio",
     "mp3",
-    "mp4"
+    "mp4",
+    "performance"
   ],
-  "version": "1.1.2",
+  "version": "1.2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/tieubao9k/ytdl-core.git"

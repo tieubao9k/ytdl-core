@@ -4,13 +4,39 @@ declare module 'ytdl-core' {
   // Utility to trick auto-complete to propose T and still accept string (#1188)
   type ExtendString<T extends string> = T | Omit<string, T>;
 
+  // Enhanced utility types for better type safety
+  type VideoID = string;
+  type YouTubeURL = string;
+  type ITags = number[];
+  
+  // Client types
+  type ClientType = 'web' | 'ios' | 'android' | 'tv' | 'webEmbedded' | 'unknown';
+  
+  // Stream type definitions
+  type StreamType = 'hls' | 'dash' | 'progressive';
+  
+  // Quality selection types
+  type QualitySelection = 'best' | 'worst' | number | string;
+
   namespace ytdl {
     type Filter = 'audioandvideo' | 'videoandaudio' | 'video' | 'videoonly' | 'audio' | 'audioonly' | ((format: videoFormat) => boolean);
 
     interface getInfoOptions {
       lang?: string;
-      requestCallback?: () => {};
-      requestOptions?: {};
+      requestCallback?: () => void;
+      requestOptions?: {
+        agent?: any;
+        dispatcher?: any;
+        headers?: Record<string, string>;
+        timeout?: number;
+        maxReconnects?: number;
+        maxRetries?: number;
+        backoff?: {
+          inc: number;
+          max: number;
+        };
+        [key: string]: any;
+      };
     }
 
     type ChooseFormatQuality = 'lowest' | 'highest' | 'highestaudio' | 'lowestaudio' | 'highestvideo' | 'lowestvideo';
@@ -31,6 +57,18 @@ declare module 'ytdl-core' {
       highWaterMark?: number;
       IPv6Block?: string;
       dlChunkSize?: number;
+      // Multi-threading options
+      multiThread?: boolean;
+      maxThreads?: number;
+      minSizeForMultiThread?: number;
+      // Request options
+      requestOptions?: {
+        agent?: any;
+        dispatcher?: any;
+        headers?: Record<string, string>;
+        timeout?: number;
+        [key: string]: any;
+      };
     }
 
     type VideoFormatQuality = 'tiny' | 'small' | 'medium' | 'large' | 'hd720' | 'hd1080' | 'hd1440' | 'hd2160' | 'highres';
@@ -68,7 +106,7 @@ declare module 'ytdl-core' {
       audioChannels?: number;
 
       // Added by ytdl-core
-      container: 'flv' | '3gp' | 'mp4' | 'webm' | 'ts';
+      container: 'flv' | '3gp' | 'mp4' | 'webm' | 'ts' | 'unknown';
       hasVideo: boolean;
       hasAudio: boolean;
       codecs: string;
@@ -78,6 +116,13 @@ declare module 'ytdl-core' {
       isLive: boolean;
       isHLS: boolean;
       isDashMPD: boolean;
+      
+      // Client information
+      client?: ClientType;
+      
+      // Audio/Video specific properties  
+      signatureCipher?: string;
+      cipher?: string;
     }
 
     interface thumbnail {
@@ -421,8 +466,10 @@ declare module 'ytdl-core' {
     function getBasicInfo(url: string, options?: getInfoOptions): Promise<videoInfo>;
     function getInfo(url: string, options?: getInfoOptions): Promise<videoInfo>;
     function downloadFromInfo(info: videoInfo, options?: downloadOptions): Readable;
-    function chooseFormat(format: videoFormat | videoFormat[], options?: chooseFormatOptions): videoFormat | never;
-    function filterFormats(formats: videoFormat | videoFormat[], filter?: Filter): videoFormat[];
+    // Enhanced function overloads for better type safety
+    function chooseFormat(formats: videoFormat[], options?: chooseFormatOptions): videoFormat | never;
+    function chooseFormat(format: videoFormat, options?: chooseFormatOptions): videoFormat | never;
+    function filterFormats(formats: videoFormat[], filter?: Filter): videoFormat[];
     function validateID(string: string): boolean;
     function validateURL(string: string): boolean;
     function getURLVideoID(string: string): string | never;

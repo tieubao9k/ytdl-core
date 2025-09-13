@@ -5,7 +5,7 @@
 [![npm downloads](https://img.shields.io/npm/dm/ytdl-core-enhanced.svg)](https://www.npmjs.com/package/ytdl-core-enhanced)
 [![Node.js CI](https://github.com/tieubao9k/ytdl-core/workflows/Node.js%20CI/badge.svg)](https://github.com/tieubao9k/ytdl-core/actions)
 
-**🚀 BIG UPDATE v1.3.0:** **2025 YouTube API Compatibility** + **Enhanced Security** + **100% Error-Free** + **Advanced Multi-Threading** + **Modern Browser Support** + **Production-Ready Reliability**!
+**🚀 BIG UPDATE v1.3.1:** **September 2025 YouTube API Compatibility** + **Enhanced TypeScript Support** + **100% Error-Free** + **Advanced Multi-Threading** + **HLS M3U8 Support** + **Production-Ready Reliability**!
 
 ---
 
@@ -15,10 +15,11 @@ Yet another YouTube downloading module for Node.js. Written with only pure JavaS
 
 ### ⚡ Enhanced Features
 
-#### 🆕 **MAJOR UPDATE - January 2025**
+#### 🆕 **MAJOR UPDATE - September 2025**
 - **🔥 100% Error-Free Codebase**: All undefined references and race conditions fixed
-- **🚀 2025 YouTube Compatibility**: Updated client versions, headers, and API patterns  
-- **🛡️ Enhanced Security & Reliability**: Production-ready error handling and fallbacks
+- **🚀 September 2025 YouTube Compatibility**: Updated client versions, headers, and API patterns  
+- **📝 Enhanced TypeScript Support**: Complete type definitions with strict type safety
+- **🎬 HLS M3U8 Auto-Detection**: Smart switching between multi-thread and HLS handling
 - **⚡ Advanced Multi-Threading**: Improved concurrent downloads with atomic completion tracking
 - **🌐 Modern Browser Support**: Chrome 133+, Firefox 134+, Edge 133+, latest mobile clients
 - **🔧 Enhanced Format Detection**: Smarter filtering preserves more working formats
@@ -51,16 +52,16 @@ ytdl('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
   .pipe(fs.createWriteStream('video.mp4'));
 ```
 
-## 🔥 What's New in v1.3.0
+## 🔥 What's New in v1.3.1
 
 ### **Critical Fixes & Updates**
 - ✅ **Fixed all undefined function errors** - No more `estimateAudioBitrate` or `bestPlayerResponse` errors
-- ✅ **Updated YouTube client versions** for 2025:
+- ✅ **Updated YouTube client versions** for September 2025:
   - 📱 iOS Client: `19.50.7` with iOS 18.2.1 support
   - 🤖 Android Client: `19.50.37` with Android 14 support  
-  - 🌐 Web Embedded: `1.20250110.01.00`
-  - 📺 TV Client: `7.20250110.13.00`
-- ✅ **Enhanced Multi-Threading** with race condition fixes and better error handling
+  - 🌐 Web Embedded: `1.20250913.01.00`
+  - 📺 TV Client: `7.20250913.13.00`
+- ✅ **Enhanced Multi-Threading** with race condition fixes and HLS M3U8 auto-detection
 - ✅ **Smarter Format Filtering** - preserves more working formats, reduces format loss
 
 ### **Security & Anti-Bot Enhancements**
@@ -76,10 +77,11 @@ ytdl('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
 - 🎯 **Optimized Format Selection** - preserves formats with partial metadata
 
 ### **Developer Experience**
+- 📝 **Complete TypeScript Support** with strict type safety, utility types, and function overloads
+- 🎬 **HLS M3U8 Auto-Detection** - intelligent switching between multi-thread and HLS handling
 - 📖 **Comprehensive Error Messages** with clear debugging information
 - 🔍 **Enhanced Logging** for signature decryption and format detection
 - ⚙️ **Production-Ready Reliability** with improved error handling
-- 🔧 **Better TypeScript Support** (coming soon)
 
 ## 📋 Basic Examples
 
@@ -295,20 +297,47 @@ app.get('/download', async (req, res) => {
 
 ## 🛠 TypeScript Support
 
+ytdl-core-enhanced provides **complete TypeScript support** with strict type safety, utility types, and function overloads:
+
 ```typescript
-import ytdl from 'ytdl-core';
+import * as ytdl from 'ytdl-core-enhanced';
 
-interface DownloadOptions {
-  quality: string;
-  filter: string;
-  fastMode?: boolean;
-}
-
-const downloadVideo = async (url: string, options: DownloadOptions) => {
-  const info = await ytdl.getInfo(url, { fastMode: options.fastMode });
-  return ytdl(url, options);
+// Enhanced download options with full type safety
+const options: ytdl.downloadOptions = {
+  quality: 'highest',
+  filter: 'audioandvideo',
+  multiThread: true,
+  maxThreads: 4,
+  minSizeForMultiThread: 2 * 1024 * 1024, // 2MB
+  requestOptions: {
+    headers: {
+      'User-Agent': 'MyApp/1.0'
+    },
+    timeout: 10000,
+    maxRetries: 3
+  }
 };
+
+// Type-safe format filtering
+const info = await ytdl.getInfo(url);
+const audioFormats = ytdl.filterFormats(info.formats, 'audioonly');
+const bestFormat = ytdl.chooseFormat(info.formats, { quality: 'highest' });
+
+// Custom filter with proper typing
+const customFilter: ytdl.Filter = (format: ytdl.videoFormat) => {
+  return format.hasAudio && 
+         format.client === 'web' && 
+         (format.audioBitrate || 0) > 128;
+};
+
+const stream = ytdl.downloadFromInfo(info, options);
 ```
+
+### Utility Types Available:
+- `VideoID`, `YouTubeURL`, `ITags`
+- `ClientType`: `'web' | 'ios' | 'android' | 'tv' | 'webEmbedded' | 'unknown'`
+- Enhanced interfaces: `getInfoOptions`, `downloadOptions`, `videoFormat`
+- Function overloads for `chooseFormat()` supporting both array and single inputs
 
 ## 🔍 Error Handling
 
@@ -669,11 +698,13 @@ MIT License
 
 ## 📝 Changelog
 
-### v1.3.0 (January 2025) - Major Stability Update
+### v1.3.1 (September 13, 2025) - Major TypeScript & HLS Update
 - **🔥 BREAKING FIXES**: Fixed all undefined function references (`estimateAudioBitrate`, `bestPlayerResponse`)
-- **🚀 2025 Compatibility**: Updated all YouTube client versions and API endpoints
+- **📝 Enhanced TypeScript**: Complete type definitions with strict type safety, utility types, function overloads
+- **🎬 HLS M3U8 Support**: Auto-detection and smart switching between multi-thread and HLS handling
+- **🚀 September 2025 Compatibility**: Updated all YouTube client versions and API endpoints
 - **🛡️ Security Enhanced**: Chrome 133+, Firefox 134+, Edge 133+ browser signatures
-- **⚡ Multi-Threading v2**: Fixed race conditions, added atomic completion tracking
+- **⚡ Multi-Threading v2**: Fixed race conditions, added atomic completion tracking with M3U8 detection
 - **🔧 Smart Filtering**: Enhanced format preservation, reduced format loss
 - **📱 Mobile Updates**: iOS 18.2.1, Android 14 support
 - **🔍 Better Debugging**: Enhanced error messages and logging

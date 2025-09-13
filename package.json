@@ -1,6 +1,6 @@
 {
   "name": "ytdl-core-enhanced",
-  "description": "Production-ready YouTube downloader with 100% error-free codebase, 2025 YouTube compatibility, advanced multi-threading, and complete DisTube integration. Features enhanced security, modern browser support, and comprehensive reliability improvements.",
+  "description": "Production-ready YouTube downloader with 100% error-free codebase, September 2025 YouTube compatibility, enhanced TypeScript support, HLS M3U8 auto-detection, advanced multi-threading, and complete DisTube integration. Features enhanced security, modern browser support, and comprehensive reliability improvements.",
   "keywords": [
     "youtube",
     "video",
@@ -12,6 +12,9 @@
     "anti-bot",
     "fast",
     "enhanced",
+    "typescript",
+    "hls",
+    "m3u8",
     "downloader",
     "stream",
     "audio",
@@ -25,7 +28,7 @@
     "security",
     "modern"
   ],
-  "version": "1.3.0",
+  "version": "1.3.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/tieubao9k/ytdl-core.git"

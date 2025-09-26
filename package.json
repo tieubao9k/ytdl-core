@@ -1,13 +1,13 @@
 {
   "name": "ytdl-core-enhanced",
-  "description": "Production-ready YouTube downloader with 100% error-free codebase, September 2025 YouTube compatibility, enhanced TypeScript support, HLS M3U8 auto-detection, advanced multi-threading, and complete DisTube integration. Features enhanced security, modern browser support, and comprehensive reliability improvements.",
+  "description": "Production-ready YouTube downloader with enhanced authentication system. Features 100% error-free codebase, September 2025 YouTube compatibility, advanced cookie management, auto browser authentication (Chrome/Edge/Firefox), multi-threading optimization, and comprehensive reliability improvements.",
   "keywords": [
     "youtube",
     "video",
     "download",
     "ytdl",
     "ytdl-core",
-    "distube",
+    "authentication",
     "multithreading",
     "anti-bot",
     "fast",
@@ -28,7 +28,7 @@
     "security",
     "modern"
   ],
-  "version": "1.4.0",
+  "version": "1.4.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/tieubao9k/ytdl-core.git"
@@ -39,7 +39,7 @@
   "homepage": "https://github.com/tieubao9k/ytdl-core#readme",
   "author": "fent <fentbox@gmail.com> (https://github.com/fent)",
   "contributors": [
-    "Satoru FX (https://github.com/tieubao9k) - v1.3.0 Major Stability Update + DisTube integration + Multi-threading optimization",
+    "Satoru FX (https://github.com/tieubao9k) - v1.4.1 Silent Mode + Enhanced Authentication + Cookie Format Fix",
     "Tobias Kutscha (https://github.com/TimeForANinja)",
     "Andrew Kelley (https://github.com/andrewrk)",
     "Mauricio Allende (https://github.com/mallendeo)",

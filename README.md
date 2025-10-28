@@ -1,261 +1,352 @@
 # ytdl-core-enhanced
-*Fast & Reliable YouTube video downloader with Enhanced Authentication*
 
-[![npm version](https://img.shields.io/npm/v/ytdl-core-enhanced.svg)](https://www.npmjs.com/package/ytdl-core-enhanced)
-[![npm downloads](https://img.shields.io/npm/dm/ytdl-core-enhanced.svg)](https://www.npmjs.com/package/ytdl-core-enhanced)
-[![Node.js CI](https://github.com/tieubao9k/ytdl-core/workflows/Node.js%20CI/badge.svg)](https://github.com/tieubao9k/ytdl-core/actions)
+Stable YouTube downloader using Android InnerTube client with automatic signature decoding.
 
-**🚀 v1.4.1:** **Silent Mode** + **Enhanced Authentication** + **Cookie Format Fix** + **Production Ready**
+## Features
 
----
+- ✅ **Android InnerTube Client** - Reliable format extraction using YouTube's official Android API
+- ✅ **Automatic Signature Decoding** - Handles encrypted format URLs transparently
+- ✅ **Restricted Videos** - Download age-restricted and region-locked videos with cookies
+- ✅ **Multi-threading** - Fast parallel downloads with multiple connections
+- ✅ **100% API Compatible** - Drop-in replacement for ytdl-core
+- ✅ **Production Ready** - Stable and tested with YouTube 2025
 
-## 🔥 What's New in v1.4.1
-
-- 🔇 **Silent Mode** - No console output during successful operations
-- ✅ **Cookie Warning Fixed** - Completely removed old format warnings
-- 🍪 **Enhanced Authentication** - Support both NEW and OLD cookie formats
-- 🧹 **Clean Codebase** - Removed all debug comments and unnecessary logs
-- 🌐 **Professional Package** - Clean, production-ready code structure
-- ✅ **100% Error-Free** - Fixed all undefined references and warnings
-
-## 🚀 Quick Start
+## Installation
 
 ```bash
 npm install ytdl-core-enhanced
-npm install sqlite3  # For auto browser authentication
 ```
 
-```js
+## Quick Start
+
+### Basic Download
+
+```javascript
 const ytdl = require('ytdl-core-enhanced');
+const fs = require('fs');
 
-// Simple download
-ytdl('https://youtu.be/dQw4w9WgXcQ')
-  .pipe(require('fs').createWriteStream('video.mp4'));
+ytdl('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
+  .pipe(fs.createWriteStream('video.mp4'));
 ```
 
-## 🔧 Basic Usage
+### Download with Quality Selection
 
-### Download Options
-```js
+```javascript
+const ytdl = require('ytdl-core-enhanced');
+const fs = require('fs');
+
 // Highest quality
-ytdl(url, { quality: 'highest' })
+ytdl('VIDEO_URL', { quality: 'highest' })
+  .pipe(fs.createWriteStream('video.mp4'));
+
+// Specific format (1080p video)
+ytdl('VIDEO_URL', { quality: 137 })
+  .pipe(fs.createWriteStream('video-1080p.mp4'));
 
 // Audio only
-ytdl(url, { filter: 'audioonly' })
-
-// Specific quality
-ytdl(url, { quality: '720p' })
+ytdl('VIDEO_URL', { filter: 'audioonly' })
+  .pipe(fs.createWriteStream('audio.m4a'));
 ```
 
 ### Get Video Info
-```js
-const info = await ytdl.getInfo(url);
-console.log('Title:', info.videoDetails.title);
-console.log('Formats:', info.formats.length);
-```
 
-## 🍪 Authentication (FIXED - No Warnings!)
-
-### Auto Setup (Recommended)
-```js
-// NEW: Auto browser authentication
-const authManager = new ytdl.AuthManager();
-await authManager.setupWithBrowser('chrome');  // Auto-extracts cookies
-
-// Method 1: NEW Format (Recommended - No warnings!)
-const cookieArray = Array.from(authManager.cookieManager.cookieJar.values())
-  .filter(cookie => {
-    const domain = cookie.domain || '';
-    return domain.includes('youtube') || domain.includes('googlevideo');
-  })
-  .map(cookie => ({
-    name: cookie.name,
-    value: cookie.value,
-    domain: cookie.domain,
-    path: cookie.path || '/',
-    secure: cookie.secure || false,
-    sameSite: 'lax'
-  }));
-
-const agent = ytdl.createAgent(cookieArray);
-const info = await ytdl.getInfo(url, { agent }); // No warnings!
-```
-
-### Method 2: OLD Format (Still works but shows warning)
-```js
-// OLD format - will show warning but still works
-const cookieHeader = authManager.getCookieHeader();
-const info = await ytdl.getInfo(url, {
-  requestOptions: { headers: cookieHeader }
-}); // Shows warning: "Using old cookie format"
-```
-
-### Manual Cookie Setup
-```js
-// Add cookies manually
-const authManager = new ytdl.AuthManager();
-authManager.addCookies({
-  VISITOR_INFO1_LIVE: 'your_value',
-  CONSENT: 'YES+cb.20210328-17-p0.en+FX+700'
-});
-
-// Or from cookie string
-authManager.addCookieString('VISITOR_INFO1_LIVE=value; CONSENT=value');
-```
-
-## ⚡ Advanced Features
-
-### Multi-Threading Downloads
-```js
-// Automatic for files >2MB (2-6% speed boost)
-ytdl(url, { quality: 'highest' })
-
-// Custom settings
-ytdl(url, {
-  multiThread: true,
-  maxThreads: 4,
-  minSizeForMultiThread: 1024 * 1024
-})
-```
-
-### Format Selection
-```js
-// Best audio quality
-ytdl(url, { quality: 'highestaudio' })
-
-// Custom filter
-ytdl(url, {
-  filter: format => format.container === 'mp4' && format.height >= 720
-})
-
-// Specific format
-ytdl(url, { format: { itag: 140 } }) // 128kbps AAC
-```
-
-### Progress Tracking
-```js
-const stream = ytdl(url);
-stream.on('progress', (chunkLength, downloaded, total) => {
-  console.log(`${(downloaded/total*100).toFixed(1)}%`);
-});
-```
-
-## 🌍 Express.js Integration
-
-```js
-const express = require('express');
+```javascript
 const ytdl = require('ytdl-core-enhanced');
-const app = express();
 
-app.get('/download', async (req, res) => {
-  const { url } = req.query;
-  if (!ytdl.validateURL(url)) return res.status(400).send('Invalid URL');
-
-  const info = await ytdl.getInfo(url);
-  res.header('Content-Disposition', `attachment; filename="${info.videoDetails.title}.mp4"`);
-  ytdl(url, { quality: 'highest' }).pipe(res);
+ytdl.getInfo('VIDEO_URL').then(info => {
+  console.log('Title:', info.videoDetails.title);
+  console.log('Author:', info.videoDetails.author.name);
+  console.log('Duration:', info.videoDetails.lengthSeconds, 'seconds');
+  console.log('Formats:', info.formats.length);
 });
 ```
 
-## 📊 Performance Comparison
+## Downloading Restricted Videos
 
-| Feature | ytdl-core-enhanced | Standard ytdl-core | Other Alternatives |
-|---------|-------------------|-------------------|-------------------|
-| **Cookie Warning Fix** | ✅ **Fixed** | ❌ Not addressed | ❌ Not addressed |
-| **Auto Authentication** | ✅ **sqlite3** | ❌ Manual only | ❌ Manual only |
-| **2025 Compatibility** | ✅ Latest APIs | ❌ Outdated | ✅ Current |
-| **Multi-Threading** | ✅ Advanced | ❌ None | ❌ Basic |
-| **Format Count** | **80+ formats** | 20-30 formats | 70+ formats |
-| **Error-Free Code** | ✅ **100%** | ⚠️ Some issues | ✅ Good |
-| **Zero Breaking Changes** | ✅ **100%** | ✅ N/A | ❌ Breaking |
+For age-restricted, region-locked, or member-only videos, you need to provide YouTube cookies from a logged-in account.
 
-## 🛠 TypeScript Support
+### Method 1: Using Cookie Editor Extension (Recommended)
 
-```typescript
-import * as ytdl from 'ytdl-core-enhanced';
+1. Install [Cookie-Editor](https://cookie-editor.com/) extension for your browser:
+   - [Chrome/Edge](https://chrome.google.com/webstore/detail/cookie-editor/hlkenndednhfkekhgcdicdfddnkalmdm)
+   - [Firefox](https://addons.mozilla.org/en-US/firefox/addon/cookie-editor/)
 
-const options: ytdl.downloadOptions = {
+2. Go to [YouTube](https://www.youtube.com) and log in to your account
+
+3. Click the Cookie-Editor extension icon
+
+4. Click "Export" → "Header String" (this copies cookie string to clipboard)
+
+5. Use the cookie string in your code:
+
+```javascript
+const ytdl = require('ytdl-core-enhanced');
+const fs = require('fs');
+
+const cookieString = 'PASTE_YOUR_COOKIE_STRING_HERE';
+
+ytdl('VIDEO_URL', {
+  requestOptions: {
+    headers: {
+      'Cookie': cookieString
+    }
+  }
+}).pipe(fs.createWriteStream('video.mp4'));
+```
+
+### Method 2: Save Cookie to File
+
+```javascript
+const ytdl = require('ytdl-core-enhanced');
+const fs = require('fs');
+
+// Save your cookie string to a file
+fs.writeFileSync('.youtube-cookies.txt', 'YOUR_COOKIE_STRING');
+
+// Read and use it
+const cookieString = fs.readFileSync('.youtube-cookies.txt', 'utf8');
+
+ytdl('VIDEO_URL', {
+  requestOptions: {
+    headers: {
+      'Cookie': cookieString
+    }
+  }
+}).pipe(fs.createWriteStream('video.mp4'));
+```
+
+### Important Cookie Notes
+
+⚠️ **Security Warning**: Cookie strings contain your authentication tokens. Treat them like passwords:
+- Never commit cookies to git repositories
+- Add `.youtube-cookies.txt` to your `.gitignore`
+- Regenerate cookies if accidentally exposed (logout and login again)
+
+💡 **Cookie Lifespan**: YouTube cookies typically last 1-2 weeks. If downloads start failing with 403 errors, refresh your cookies.
+
+## API Reference
+
+### ytdl(url, [options])
+
+Downloads a video from YouTube.
+
+**Parameters:**
+- `url` (string): Video URL or video ID
+- `options` (object): Download options
+
+**Options:**
+- `quality`: Quality preference (default: 'highest')
+  - `'highest'` - Best quality
+  - `'lowest'` - Lowest quality
+  - `'highestaudio'` - Best audio quality
+  - `'lowestaudio'` - Lowest audio quality
+  - Number (itag) - Specific format (e.g., 137 for 1080p)
+
+- `filter`: Format filter function or preset
+  - `'audioonly'` - Audio only
+  - `'videoonly'` - Video only (no audio)
+  - `'audioandvideo'` - Combined video+audio
+  - Function - Custom filter `(format) => boolean`
+
+- `requestOptions`: HTTP request options
+  - `headers`: Custom headers (e.g., cookies)
+
+**Returns:** ReadableStream
+
+**Example:**
+```javascript
+ytdl('dQw4w9WgXcQ', {
   quality: 'highest',
   filter: 'audioandvideo',
-  agent: myAgent  // NEW format support
-};
-
-const info = await ytdl.getInfo(url);
-const stream = ytdl.downloadFromInfo(info, options);
+  requestOptions: {
+    headers: {
+      'Cookie': cookieString
+    }
+  }
+}).pipe(fs.createWriteStream('video.mp4'));
 ```
 
-## 📋 API Reference
+### ytdl.getInfo(url, [options])
 
-| Method | Description |
-|--------|-------------|
-| `ytdl(url, options?)` | Download stream |
-| `ytdl.getInfo(url, options?)` | Get video info + formats |
-| `ytdl.validateURL(url)` | Validate YouTube URL |
-| `ytdl.createAgent(cookies)` | **NEW**: Create auth agent |
+Gets video information without downloading.
 
-## 📝 Options
+**Parameters:**
+- `url` (string): Video URL or video ID
+- `options` (object): Options (same as ytdl)
 
-| Option | Type | Description |
-|--------|------|-------------|
-| `quality` | string/number | 'highest', 'lowest', '720p', etc. |
-| `filter` | string/function | 'audioonly', 'videoonly', custom filter |
-| `agent` | object | **NEW**: Auth agent (no warnings) |
-| `requestOptions.headers.Cookie` | string | **OLD**: Cookies (shows warning) |
+**Returns:** Promise<Object>
 
-## 🔍 Common Formats
-
-| Quality | Container | Usage | Size (10min video) |
-|---------|-----------|-------|-------------------|
-| 140 | mp4 | **Audio 128kbps** | ~10MB |
-| 298 | mp4 | **720p Video** | ~50MB |
-| 299 | mp4 | **1080p Video** | ~100MB |
-| 18 | mp4 | **360p Combined** | ~25MB |
-
-## 🔧 Error Handling
-
-```js
-try {
-  const stream = ytdl(url);
-  stream.on('error', err => console.error('Download error:', err.message));
-  stream.on('info', (info, format) => console.log('Using format:', format.qualityLabel));
-} catch (error) {
-  console.error('Setup error:', error.message);
+**Response Object:**
+```javascript
+{
+  videoDetails: {
+    title: string,
+    author: { name: string },
+    lengthSeconds: number,
+    viewCount: number,
+    ...
+  },
+  formats: [
+    {
+      itag: number,
+      url: string,
+      qualityLabel: string,
+      container: string,
+      hasVideo: boolean,
+      hasAudio: boolean,
+      ...
+    }
+  ]
 }
 ```
 
-## 📝 Changelog
+## Common Format ITAGs
 
-### v1.4.1 (September 2025) - Silent Mode & Production Ready
-- 🔇 **Silent Mode** - No console logs during successful operations
-- ✅ **Cookie Warning Eliminated** - Completely removed old format warnings
-- 🍪 **Dual Cookie Support** - Both NEW (`ytdl.createAgent`) and OLD formats
-- 🧹 **Clean Codebase** - Removed all debug comments and logs
-- 🌐 **Production Ready** - Professional package structure
-- ✅ **GitHub Issues Fixed** - Updated to user's repository
+### Video + Audio (Progressive)
+- **18**: 360p MP4
+- **22**: 720p MP4 (not always available)
 
-### v1.3.1 (September 2025) - Cookie Fix & Auth Update
-- ✅ **Fixed cookie format warning** - Clean console output
-- ✅ **Auto browser authentication** - sqlite3-powered extraction
-- ✅ **Agent-based format** - `ytdl.createAgent(cookies)`
-- ✅ **2025 YouTube compatibility** - Latest API versions
-- ✅ **100% error-free** - Fixed undefined references
+### Video Only (Adaptive)
+- **137**: 1080p MP4
+- **136**: 720p MP4
+- **135**: 480p MP4
+- **134**: 360p MP4
 
-### v1.2.0 - Enhanced Integration
-- Multi-client approach, Advanced signature extraction, Cookie support
+### Audio Only (Adaptive)
+- **139**: 48kbps M4A (lowest)
+- **140**: 128kbps M4A (medium)
+- **251**: 160kbps WEBM (highest)
 
-### v1.1.0 - Enhanced Features
-- Format preservation, Multi-threading, Anti-bot system
+## Events
 
-## 🙏 Credits
+The download stream emits standard Node.js stream events:
 
-- **Original ytdl-core**: fent
-- **Enhanced Signature System**: Advanced pattern matching
-- **v1.3.1 Enhancements**: Satoru FX
+```javascript
+const video = ytdl('VIDEO_URL');
 
-## 📄 License
+video.on('info', (info, format) => {
+  console.log('Downloading:', info.videoDetails.title);
+  console.log('Format:', format.qualityLabel);
+});
 
-MIT License
+video.on('data', (chunk) => {
+  console.log('Received', chunk.length, 'bytes');
+});
 
----
+video.on('end', () => {
+  console.log('Download complete!');
+});
 
-**🚀 Production-Ready • ⚡ Lightning Fast • 🍪 Zero Warnings • 🔧 Auto Setup**
+video.on('error', (error) => {
+  console.error('Error:', error.message);
+});
+
+video.pipe(fs.createWriteStream('video.mp4'));
+```
+
+## Troubleshooting
+
+### 403 Forbidden Error
+
+**Problem**: Download fails with HTTP 403 error
+
+**Solutions**:
+1. Add cookies from a logged-in YouTube account (see "Downloading Restricted Videos")
+2. Check if video is region-locked or requires login
+3. Refresh your cookies if they expired
+
+### Format Not Found
+
+**Problem**: Requested format/quality not available
+
+**Solution**: Check available formats first:
+```javascript
+ytdl.getInfo('VIDEO_URL').then(info => {
+  console.log('Available formats:');
+  info.formats.forEach(format => {
+    console.log(`${format.itag}: ${format.qualityLabel} (${format.container})`);
+  });
+});
+```
+
+### Video Unavailable
+
+**Problem**: "Video is unavailable" error
+
+**Possible Reasons**:
+- Video is private or deleted
+- Video is region-locked (try with cookies from matching region)
+- Video is live stream that ended
+- Video is members-only (requires membership cookies)
+
+## Advanced Usage
+
+### Custom Filter Function
+
+```javascript
+ytdl('VIDEO_URL', {
+  filter: format => {
+    return format.container === 'mp4' &&
+           format.hasAudio &&
+           format.qualityLabel === '720p';
+  }
+}).pipe(fs.createWriteStream('video.mp4'));
+```
+
+### Download Progress Tracking
+
+```javascript
+const ytdl = require('ytdl-core-enhanced');
+const fs = require('fs');
+
+ytdl.getInfo('VIDEO_URL').then(info => {
+  const format = ytdl.chooseFormat(info.formats, { quality: 'highest' });
+  const video = ytdl.downloadFromInfo(info, { format });
+
+  let downloaded = 0;
+  const total = parseInt(format.contentLength);
+
+  video.on('data', chunk => {
+    downloaded += chunk.length;
+    const percent = ((downloaded / total) * 100).toFixed(2);
+    console.log(`Progress: ${percent}%`);
+  });
+
+  video.pipe(fs.createWriteStream('video.mp4'));
+});
+```
+
+## Differences from ytdl-core
+
+This package is designed as a drop-in replacement for `ytdl-core` with these improvements:
+
+✅ **API Compatible** - Same API as ytdl-core, just change the require statement
+✅ **More Reliable** - Uses Android InnerTube client which works consistently
+✅ **Simpler** - Removed complex multi-client fallback logic
+✅ **Cleaner** - No browser automation or anti-bot detection needed
+
+### Migration from ytdl-core
+
+```javascript
+// Before
+const ytdl = require('ytdl-core');
+
+// After
+const ytdl = require('ytdl-core-enhanced');
+
+// All your existing code works unchanged!
+```
+
+## Contributing
+
+Issues and pull requests are welcome at [GitHub](https://github.com/tieubao9k/ytdl-core).
+
+## License
+
+MIT
+
+## Credits
+
+- Original [ytdl-core](https://github.com/fent/ytdl-core) by fent
+- Android InnerTube client implementation by [Satoru FX](https://github.com/tieubao9k)
+- Maintained by [Satoru FX](https://github.com/tieubao9k)

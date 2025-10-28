@@ -1,23 +1,19 @@
 {
   "name": "ytdl-core-enhanced",
-  "description": "Revolutionary YouTube downloader with Lavalink-inspired InnerTube multi-client architecture. Features 72% faster info extraction, zero signature decryption (direct URLs), 100% reliability, advanced authentication, auto browser cookies (Chrome/Edge/Firefox), multi-threading, and production-ready October 2025 compatibility.",
+  "description": "Stable YouTube downloader using Android InnerTube client with automatic signature decoding. Features reliable format extraction, restricted video support with cookies, multi-threading, and production-ready 2025 compatibility.",
   "keywords": [
     "youtube",
     "video",
     "download",
     "ytdl",
     "ytdl-core",
-    "lavalink",
     "innertube",
     "android-client",
-    "direct-urls",
-    "no-signature",
+    "signature-decoding",
     "authentication",
     "multithreading",
-    "anti-bot",
     "fast",
     "enhanced",
-    "typescript",
     "hls",
     "m3u8",
     "downloader",
@@ -25,13 +21,12 @@
     "audio",
     "mp3",
     "mp4",
-    "performance",
     "2025",
     "production-ready",
     "reliable",
-    "modern"
+    "stable"
   ],
-  "version": "2.0.0",
+  "version": "2.1.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/tieubao9k/ytdl-core.git"
@@ -42,7 +37,7 @@
   "homepage": "https://github.com/tieubao9k/ytdl-core#readme",
   "author": "fent <fentbox@gmail.com> (https://github.com/fent)",
   "contributors": [
-    "Satoru FX (https://github.com/tieubao9k) - v2.0.0 Lavalink InnerTube Integration (72% faster, no signature decipher)",
+    "Satoru FX (https://github.com/tieubao9k) - v2.0.0+ Android InnerTube Integration with signature decoding",
     "Tobias Kutscha (https://github.com/TimeForANinja)",
     "Andrew Kelley (https://github.com/andrewrk)",
     "Mauricio Allende (https://github.com/mallendeo)",

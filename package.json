@@ -26,7 +26,7 @@
     "reliable",
     "stable"
   ],
-  "version": "2.2.1",
+  "version": "2.2.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/tieubao9k/ytdl-core.git"

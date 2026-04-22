@@ -1,2 +1,9 @@
 node_modules/
 *.log
+
+# Test coverage
+.nyc_output/
+coverage/
+
+# Documentation
+LAVALINK_FEATURES.md

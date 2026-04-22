@@ -2,6 +2,29 @@
 
 Stable YouTube downloader using Android InnerTube client with automatic signature decoding.
 
+## Changelog
+
+### v2.3.0 (2026-04-22)
+
+**New Features:**
+- Added MWEB, WEBEMBEDDED, and IOS InnerTube clients for better format coverage
+- Dynamic WEB client version extraction from YouTube homepage
+- poToken support for bypassing YouTube bot detection
+- Remote cipher server support (https://cipher.kikkia.dev) for offloading signature decoding
+- Automatic configuration system with zero-config usage
+- Lazy auto-initialization for poToken and cipher server
+
+**Improvements:**
+- Fixed client selection to respect explicit client choice without auto-fallback
+- Removed all code comments for cleaner codebase
+- Removed automatic player script dumping on decipher errors
+- Enhanced error handling with graceful fallbacks
+
+**Technical:**
+- Remote cipher server tries first, falls back to local decoding
+- poToken auto-generation via youtube-trusted-session-generator (npm global, Docker, or npx)
+- Cipher server availability testing before configuration
+
 ## Features
 
 - ✅ **Android InnerTube Client** - Reliable format extraction using YouTube's official Android API
